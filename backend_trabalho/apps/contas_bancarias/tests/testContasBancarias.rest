@@ -1,0 +1,51 @@
+# @name loginAutenticado
+POST http://localhost:40000/Login HTTP/1.1
+content-type: application/json
+
+{
+    "username": "qwe",
+    "password": "qwe"
+}
+
+@accessToken = {{loginAutenticado.response.body.$.token}}
+@username = {{loginAutenticado.response.body.$.username}}
+
+POST http://localhost:40000/insertContaBancaria HTTP/1.1
+content-type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+    "contaid": 0,
+    "banco": "Banco Inter",
+    "agencia": "0001",
+    "numero_conta": "998877-6",
+    "saldo": 5420.50,
+    "ativo": true,
+    "deleted": false
+}
+
+GET http://localhost:40000/getAllContasBancarias HTTP/1.1
+content-type: application/json
+Authorization: Bearer {{accessToken}}
+
+GET http://localhost:40000/getContaBancariaByID/1 HTTP/1.1
+content-type: application/json
+Authorization: Bearer {{accessToken}}
+
+
+PUT http://localhost:40000/updateContaBancaria/1 HTTP/1.1
+content-type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+    "banco": "Banco Inter Alterado",
+    "agencia": "0001",
+    "numero_conta": "998877-6",
+    "saldo": 6000.00,
+    "ativo": true,
+    "deleted": false
+}
+
+DELETE http://localhost:40000/deleteContaBancaria/1 HTTP/1.1
+content-type: application/json
+Authorization: Bearer {{accessToken}}

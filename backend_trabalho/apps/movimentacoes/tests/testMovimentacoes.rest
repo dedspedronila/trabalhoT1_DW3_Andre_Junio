@@ -1,0 +1,57 @@
+### 1. Autenticação para captura do token
+# @name loginAutenticado
+POST http://localhost:40000/Login HTTP/1.1
+content-type: application/json
+
+{
+    "username": "qwe",
+    "password": "qwe"
+}
+
+### Variáveis dinâmicas capturadas da resposta do login
+@accessToken = {{loginAutenticado.response.body.$.token}}
+@username = {{loginAutenticado.response.body.$.username}}
+
+### 2. Teste de inserção de movimentação (Insert)
+POST http://localhost:40000/insertMovimentacao HTTP/1.1
+content-type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+    "movimentacaoid": 0,
+    "descricao": "Pagamento de Licença de Software",
+    "tipo": "DEBITO",
+    "valor": 450.00,
+    "data_movimentacao": "2026-03-25",
+    "contaid": 1,
+    "deleted": false
+}
+
+### 3. Teste de busca de todas as movimentações ativas (GetAll)
+GET http://localhost:40000/getAllMovimentacoes HTTP/1.1
+content-type: application/json
+Authorization: Bearer {{accessToken}}
+
+### 4. Teste de busca de movimentação por ID (GetByID)
+GET http://localhost:40000/getMovimentacaoByID/1 HTTP/1.1
+content-type: application/json
+Authorization: Bearer {{accessToken}}
+
+### 5. Teste de atualização de movimentação (Update)
+PUT http://localhost:40000/updateMovimentacao/1 HTTP/1.1
+content-type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+    "descricao": "Pagamento de Licença de Software - Atualizado",
+    "tipo": "DEBITO",
+    "valor": 480.00,
+    "data_movimentacao": "2026-03-25",
+    "contaid": 1,
+    "deleted": false
+}
+
+### 6. Teste de exclusão lógica (Soft Delete)
+DELETE http://localhost:40000/deleteMovimentacao/1 HTTP/1.1
+content-type: application/json
+Authorization: Bearer {{accessToken}}
