@@ -1,0 +1,52 @@
+<!--views/home.njk -->
+
+{% extends "layout.njk" %}
+
+{% block content %}
+  <header class="page-header">
+    <p class="page-kicker text-primary fw-semibold mb-2">Sistema de Gestão Bancária</p>
+    <h1 class="display-6 fw-bold mb-2">Painel Financeiro Principal</h1>
+    <p class="text-secondary mb-0">Use a navegação superior para acessar movimentações financeiras, contas bancárias ou encerrar a sessão.</p>
+  </header>
+
+  <div class="hero-card card border-0 shadow-sm mb-4">
+    <div class="card-body p-4 p-lg-5">
+      <div class="row g-4 align-items-center">
+        <div class="col-lg-8">
+          <h2 class="h4 fw-semibold mb-3">Bem-vindo ao DW3 Bank</h2>
+          <p class="text-secondary mb-0">Acompanhe saldos, gerencie contas bancárias cadastradas e controle lançamentos de crédito e débito em um único lugar.</p>
+        </div>
+        <div class="col-lg-4 text-lg-end d-flex flex-wrap gap-2 justify-content-lg-end">
+          <a class="btn btn-light fw-semibold" href="/contas_bancarias">Contas Bancárias</a>
+          <a class="btn btn-primary fw-semibold" href="/movimentacoes">Ir para Movimentações</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-md-6">
+      <div class="bank-stat-card card border-0 shadow-sm h-100">
+        <div class="card-body p-4">
+          <p class="page-kicker fw-semibold mb-1">Cadastro & Saldos</p>
+          <h3 class="h5 fw-bold mb-2">Contas Bancárias</h3>
+          <p class="text-secondary small mb-3">Consulte bancos, agências, números de conta, status de ativação e saldos atualizados.</p>
+          <a class="btn btn-sm btn-outline-dark" href="/contas_bancarias">Acessar Contas</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="bank-stat-card card border-0 shadow-sm h-100">
+        <div class="card-body p-4">
+          <p class="page-kicker fw-semibold mb-1">Extrato & Lançamentos</p>
+          <h3 class="h5 fw-bold mb-2">Movimentações Financeiras</h3>
+          <p class="text-secondary small mb-3">Registre e acompanhe operações de crédito e débito vinculadas às contas ativas.</p>
+          <a class="btn btn-sm btn-outline-dark" href="/movimentacoes">Acessar Movimentações</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/dw3frontend.js"></script>
+  <script src="/apps/home/vwHome.js"></script>
+{% endblock %}
