@@ -6,20 +6,19 @@
       <div class="card-body p-4 p-md-5">
         <div class="d-flex align-items-center gap-2 mb-3">
           <span class="brand-badge">$</span>
-          <p class="page-kicker text-primary fw-semibold mb-0">DW3 Bank • Internet Banking</p>
+          <p class="page-kicker text-primary fw-semibold mb-0">DW3 Bank</p>
         </div>
-        <h1 class="h3 fw-bold mb-2">Acesso ao Sistema Bancário</h1>
-        <p class="text-secondary mb-4">Autentique-se para gerenciar contas bancárias e movimentações financeiras.</p>
+        <h1 class="h3 fw-bold mb-4">Acesso ao Sistema Bancário</h1>
 
         <form id="loginForm" data-servidor-dw3="{{ servidorDw3 }}">
           <div id="loginError" class="alert alert-danger d-none" role="alert"></div>
           <div class="mb-3">
-            <label class="form-label" for="usuario">Usuário / Operador</label>
-            <input class="form-control" id="usuario" name="usuario" type="text" placeholder="Seu usuário (ex: admin)" autocomplete="username">
+            <label class="form-label" for="usuario">Usuário</label>
+            <input class="form-control" id="usuario" name="usuario" type="text" autocomplete="username">
           </div>
           <div class="mb-4">
-            <label class="form-label" for="senha">Senha de Acesso</label>
-            <input class="form-control" id="senha" name="senha" type="password" placeholder="Sua senha" autocomplete="current-password">
+            <label class="form-label" for="senha">Senha</label>
+            <input class="form-control" id="senha" name="senha" type="password" autocomplete="current-password">
           </div>
           <button class="btn btn-primary w-100 py-2 fw-semibold" type="submit">Entrar no Sistema</button>
         </form>

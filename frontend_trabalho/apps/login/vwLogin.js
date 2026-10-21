@@ -44,8 +44,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     'content-type': 'application/json'
                 },
                 body: JSON.stringify({
-                    UserName: usuario,
-                    Password: senha
+                    username: usuario,
+                    password: senha
                 })
             });
 

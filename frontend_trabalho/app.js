@@ -8,6 +8,8 @@ var nunjucks = require('nunjucks');
 var indexRouter = require('./routes/rtIndex');
 var loginRouter = require('./routes/rtLogin');
 var homeRouter = require('./routes/rtHome');
+var contasBancariasRouter = require('./routes/rtContasBancarias');
+var movimentacoesRouter = require('./routes/rtMovimentacoes');
 
 //requisitando o que tem no .env
 require('dotenv').config({ path: path.join(__dirname, 'frontend.env'), quiet: true });
@@ -25,7 +27,7 @@ app.set('views', [viewsPath, appsPath]);
 app.set('view engine', 'njk');
 
 //função que vincula o nunjucks junto ao express para rodar o frontend da pagina 
-nunjucks.configure(viewsPath, {
+nunjucks.configure([viewsPath, appsPath], {
     autoescape: true,
     express: app,
     noCache: app.get('env') === 'development'
@@ -36,11 +38,14 @@ nunjucks.configure(viewsPath, {
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/apps', express.static(path.join(__dirname, 'apps')));
 
 //mostra a rota ao servidor que o usuario irá utilizar e para onde ele irá
 app.use('/', indexRouter);
 app.use('/login', loginRouter);
 app.use('/home', homeRouter);
+app.use('/contas_bancarias', contasBancariasRouter);
+app.use('/movimentacoes', movimentacoesRouter);
 
 //acusador de erro 404, puxa a mensagem de erro caso tente acessar uma rota que não existe 
 app.use(function (req, res, next) {
