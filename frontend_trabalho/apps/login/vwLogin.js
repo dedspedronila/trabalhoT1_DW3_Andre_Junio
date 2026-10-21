@@ -1,10 +1,13 @@
 //espera o html carregar antes de executar
 document.addEventListener('DOMContentLoaded', function () {
-    
-    // atribui o formulário de login e onde as mensagem de erro vai ser exibida
+
+    //limpa o Cookie Islogged
+    dw3ClearIsLoggedCookie();
+
+    //atribui o formulário de login e onde as mensagem de erro vai ser exibida
     var form = document.getElementById('loginForm');
     var errorBox = document.getElementById('loginError');
-    
+
     //se o formulario de login não executar, a execução é interrompida
     if (!form) {
         return;
@@ -56,25 +59,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
             //procura o token de resposta do back
             var token = data.token || data.Token || data.accessToken || data.AccessToken;
-            
+
             //se não encontrar, exibe o erro
             if (!token) {
                 throw new Error('Erro no login. Token não retornado pelo servidor.');
             }
 
             //salva o token criando um cookie para verificar se o usuário está logado
-            localStorage.setItem('token', token); 
+            localStorage.setItem('token', token);
             document.cookie = 'IsLogged=true; path=/'; //define o cookie usado para verificar se o usuário está ou não logado
             window.location.href = '/home'; //redireciona o usuario para a pagina inicial
 
-        //caso haja erro, exibe na tela 
+            //caso haja erro, exibe na tela 
         } catch (error) {
             if (errorBox) {
                 errorBox.textContent = error.message || 'Nao foi possivel realizar o login.';
                 errorBox.classList.remove('d-none');
             }
 
-        //executada no final, reativando o botão de entrar/ fazer login novamente
+            //executada no final, reativando o botão de entrar/ fazer login novamente
         } finally {
             if (submitButton) {
                 submitButton.disabled = false;
