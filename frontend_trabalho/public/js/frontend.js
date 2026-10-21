@@ -30,6 +30,8 @@ function dw3ClearIsLoggedCookie() {
     }
 }
 
+//monta os headers de requisição HTTP, incluindo o token JWT de autenticação se ele existir
+//  no localStorage
 function dw3MontarHeadersAutenticacao(headers) {
     var token = localStorage.getItem('token');
     var finalHeaders = headers || {};
@@ -39,6 +41,7 @@ function dw3MontarHeadersAutenticacao(headers) {
     return finalHeaders;
 }
 
+//oculta um elemento da tela buscando-o pelo ID e adicionando a classe CSS 'd-none'
 function dw3OcultarBotao(id) {
     var botao = document.getElementById(id);
     if (botao) {

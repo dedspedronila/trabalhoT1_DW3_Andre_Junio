@@ -11,8 +11,10 @@ router.get('/', function(req, res) {
     });
 });
 
-// Nova rota
+//define uma rota GET para o caminho '/form' dentro de movimentações (ex: /movimentacoes/form)
 router.get('/form', function(req, res) {
+
+    //renderiza o template HTML do formulário de movimentações
     res.render('movimentacoes/vwFormMovimentacoes', {
         title: 'Formulario de movimentacoes',
         showNavbar: true,

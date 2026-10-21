@@ -1,6 +1,7 @@
+//ao entrar na pagina carrega a listagem de contas bancarias
 document.addEventListener('DOMContentLoaded', function() {
     if (!dw3IsLogged()) {
-        return;
+        return; //sai se não estiver logado
     }
     var listagem = document.getElementById('contasListagem');
     var alertBox = document.getElementById('contasAlert');
@@ -12,6 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
     carregarContas(servidorDw3, alertBox);
 });
 
+//requisição GET para buscar todas as contas bancarias cadastradas no servidor
 async function carregarContas(servidorDw3, alertBox) {
     try {
         if (!servidorDw3) {
@@ -27,13 +29,16 @@ async function carregarContas(servidorDw3, alertBox) {
         if (data.status !== 'ok' || !Array.isArray(data.registro)) {
             throw new Error('Resposta invalida do servidor backend.');
         }
+
+        //inicializa a tabela com os registros obtidos
         inicializarTabelaContas(data.registro);
     } catch (error) {
         exibirErro(alertBox, error.message || 'Erro ao carregar contas bancarias.');
-        inicializarTabelaContas([]);
+        inicializarTabelaContas([]); //inicializa tabela vazia em caso de erro
     }
 }
 
+//configura o plugin DataTable preenchendo as colunas, formatação de saldo e botões de ação
 function inicializarTabelaContas(contas) {
     new DataTable('#tblContasBancarias', {
         data: contas,
@@ -49,6 +54,8 @@ function inicializarTabelaContas(contas) {
                     if (data === null || data === undefined || data === '') {
                         return '';
                     }
+
+                    //formata o valor numérico para o padrão de moeda Real (BRL)
                     return Number(data).toLocaleString('pt-BR', {
                         style: 'currency',
                         currency: 'BRL'
@@ -65,6 +72,7 @@ function inicializarTabelaContas(contas) {
                         return '';
                     }
                     var contaId = escaparHtml(row.contaid || '');
+                    //renderiza os botões de visualizar, atualizar e remover em cada linha da tabela
                     return [
                         '<div class="btn-group btn-group-sm" role="group" aria-label="Operacoes da conta bancaria">',
                         '<button class="btn btn-outline-primary" type="button" data-action="visualizar" data-contaid="' + contaId + '" title="Visualizar" aria-label="Visualizar"><i class="bi bi-eye"></i></button>',
@@ -75,6 +83,8 @@ function inicializarTabelaContas(contas) {
                 }
             }
         ],
+
+        //traduções da interface do DataTable para o português
         language: {
             emptyTable: 'Nenhuma conta bancaria cadastrada.',
             info: 'Mostrando _START_ ate _END_ de _TOTAL_ registros',
@@ -95,6 +105,7 @@ function inicializarTabelaContas(contas) {
     });
 }
 
+//configura os cliques nos botões da tabela para redirecionar para o formulário com a operação correta
 function configurarOperacoesContas(alertBox) {
     var tabela = document.getElementById('tblContasBancarias');
     if (!tabela) {
@@ -107,20 +118,27 @@ function configurarOperacoesContas(alertBox) {
         }
         var action = botao.dataset.action;
         var contaId = botao.dataset.contaid;
+
+        //redireciona para visualização ('Re')
         if (action === 'visualizar') {
             window.location.href = '/contas_bancarias/form?oper=Re&contaId=' + encodeURIComponent(contaId);
             return;
         }
+
+        //redireciona para atualização ('Up')
         if (action === 'atualizar') {
             window.location.href = '/contas_bancarias/form?oper=Up&contaId=' + encodeURIComponent(contaId);
             return;
         }
+
+        //redireciona para remoção ('De')
         if (action === 'remover') {
             window.location.href = '/contas_bancarias/form?oper=De&contaId=' + encodeURIComponent(contaId);
         }
     });
 }
 
+//exibe uma mensagem de aviso/informação na tela
 function exibirAviso(alertBox, mensagem) {
     if (!alertBox) {
         return;
@@ -131,6 +149,7 @@ function exibirAviso(alertBox, mensagem) {
     alertBox.classList.remove('d-none');
 }
 
+//escapa caracteres especiais do HTML para evitar falhas de segurança
 function escaparHtml(valor) {
     return String(valor)
         .replace(/&/g, '&amp;')
@@ -140,6 +159,7 @@ function escaparHtml(valor) {
         .replace(/>/g, '&gt;');
 }
 
+//exibe uma mensagem de erro na tela
 function exibirErro(alertBox, mensagem) {
     if (!alertBox) {
         return;

@@ -1,7 +1,8 @@
-// Arquivo: apps/movimentacoes/vwFormMovimentacoes.js
+//quando a pagina é carregada valida o login, pega elementos, configura o Select2 e define a operação 
+// (criar, ler, atualizar ou deletar)
 document.addEventListener('DOMContentLoaded', async function() {
     if (!dw3IsLogged()) {
-        return;
+        return; //sai se não estiver logado
     }
     var form = document.getElementById('frmMovimentacoes');
     if (!form) {
@@ -13,19 +14,27 @@ document.addEventListener('DOMContentLoaded', async function() {
     var btnInserir = document.getElementById('btnInserirMovimentacao');
     var btnAtualizar = document.getElementById('btnAtualizarMovimentacao');
     var btnRemover = document.getElementById('btnRemoverMovimentacao');
+
+    //inicializa o componente de seleção de contas 
     inicializarSelectContas();
+
+    //se for criar ('Cr')
     if (oper === 'Cr') {
-        btnInserir.classList.remove('d-none'); // Torna o Botão visível.
-        carregarContasToMovimentacoes(servidorDw3);
+        btnInserir.classList.remove('d-none'); //torna o botão visível
+        carregarContasToMovimentacoes(servidorDw3); //carrega as contas no select
     }
     if (btnInserir) {
         btnInserir.addEventListener('click', function() {
             vwInsertMovimentacao();
         });
     }
+
+    //se for ler('Re')
     if (oper === 'Re') {
         vwGetMovimentacaoByID();
     }
+
+    //se for atualizar ('Up')
     if (oper === 'Up') {
         btnAtualizar.classList.remove('d-none');
         btnAtualizar.disabled = !(await vwGetMovimentacaoByID());
@@ -33,6 +42,8 @@ document.addEventListener('DOMContentLoaded', async function() {
             vwUpdateMovimentacao();
         });
     }
+
+    //se for deletar ('De')
     if (oper === 'De') {
         btnRemover.classList.remove('d-none');
         btnRemover.disabled = !(await vwGetMovimentacaoByID());
@@ -42,7 +53,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 });
 
-// Aqui é inicializado o componente Select2.js em branco
+//inicializa o plugin no campo de contas
 function inicializarSelectContas() {
     $('#contaid').select2({
         theme: 'bootstrap-5',
@@ -51,14 +62,14 @@ function inicializarSelectContas() {
     });
 }
 
-// Aqui é preenchido o componente Select2 com as contas disponíveis
+//busca as contas disponíveis no backend para preencher 
 async function carregarContasToMovimentacoes(servidorDw3) {
     try {
         if (!servidorDw3) {
             throw new Error('Endereço do servidor backend nao configurado.');
         }
         var response = await fetch(servidorDw3 + '/getContasToMovimentacoes', {
-            headers: dw3MontarHeadersAutenticacao() // Função que está no arquivo public/js/frontend.js
+            headers: dw3MontarHeadersAutenticacao() //adiciona os headers de autenticação
         });
         if (!response.ok) {
             throw new Error('Não foi possivel carregar as contas.');
@@ -76,6 +87,7 @@ async function carregarContasToMovimentacoes(servidorDw3) {
     }
 }
 
+//preenche o elemento select com as opções de contas vindas do servidor
 function preencherSelectContas(contas) {
     var contaSelect = document.getElementById('contaid');
     if (!contaSelect) {
@@ -91,19 +103,20 @@ function preencherSelectContas(contas) {
     $('#contaid').trigger('change');
 }
 
+//envia os dados para criar uma nova movimentação no servidor (POST)
 async function vwInsertMovimentacao() {
     var form = document.getElementById('frmMovimentacoes');
     var btnInserir = document.getElementById('btnInserirMovimentacao');
     try {
         if (!form.reportValidity()) {
-            return;
+            return; //valida os campos obrigatórios
         }
         var servidorDw3 = form.dataset.servidorDw3;
         if (!servidorDw3) {
             throw new Error('Endereco do servidor backend nao configurado.');
         }
         if (btnInserir) {
-            btnInserir.disabled = true;
+            btnInserir.disabled = true; //desativa o botão para evitar cliques duplos
         }
         var response = await fetch(servidorDw3 + '/insertMovimentacao', {
             method: 'POST',
@@ -122,16 +135,17 @@ async function vwInsertMovimentacao() {
         if (data.status !== 'ok') {
             throw new Error(data.status || 'Nao foi possivel inserir a movimentacao.');
         }
-        window.location.href = '/movimentacoes';
+        window.location.href = '/movimentacoes'; //retorna para a listagem
     } catch (error) {
         alert(error.message || 'Erro ao inserir movimentacao.');
     } finally {
         if (btnInserir) {
-            btnInserir.disabled = false;
+            btnInserir.disabled = false; //reativa o botão
         }
     }
 }
 
+//puxa os valores preenchidos nos inputs do formulário e retorna um objeto
 function montarMovimentacaoDoFormulario() {
     return {
         descricao: document.getElementById('descricao').value,
@@ -143,6 +157,7 @@ function montarMovimentacaoDoFormulario() {
     };
 }
 
+//busca uma movimentação específica pelo ID da URL e preenche o formulário (GET)
 async function vwGetMovimentacaoByID() {
     var form = document.getElementById('frmMovimentacoes');
     try {
@@ -174,14 +189,17 @@ async function vwGetMovimentacaoByID() {
         if (!movimentacao) {
             throw new Error('Movimentacao nao encontrada.');
         }
+
+        //preenche os campos da tela com os dados retornados
         document.getElementById('movimentacaoid').value = movimentacao.movimentacaoid;
         document.getElementById('descricao').value = movimentacao.descricao ?? '';
         document.getElementById('tipo').value = movimentacao.tipo ?? '';
         document.getElementById('valor').value = movimentacao.valor ?? '';
         document.getElementById('data_movimentacao').value = movimentacao.data_movimentacao ? movimentacao.data_movimentacao.slice(0, 10) : '';
         document.getElementById('deleted').value = String(movimentacao.deleted === true);
-        await carregarContasToMovimentacoes(servidorDw3); // Carrega o component Select2.
-        $('#contaid').val(movimentacao.contaid).trigger('change');
+
+        await carregarContasToMovimentacoes(servidorDw3); //carrega as contas 
+        $('#contaid').val(movimentacao.contaid).trigger('change'); //seleciona a conta correta
         return true;
     } catch (error) {
         alert(error.message || 'Erro ao carregar movimentacao.');
@@ -189,6 +207,7 @@ async function vwGetMovimentacaoByID() {
     }
 }
 
+//atualiza os dados de uma movimentação existente no servidor (PUT)
 async function vwUpdateMovimentacao() {
     var form = document.getElementById('frmMovimentacoes');
     var btnAtualizar = document.getElementById('btnAtualizarMovimentacao');
@@ -236,12 +255,16 @@ async function vwUpdateMovimentacao() {
     }
 }
 
+
+//remove uma movimentação do servidor após confirmação (DELETE)
 async function vwDeleteMovimentacao() {
     var form = document.getElementById('frmMovimentacoes');
     var btnRemover = document.getElementById('btnRemoverMovimentacao');
     if (btnRemover.disabled) {
         return;
     }
+
+    //exibe caixa de confirmação nativa
     if (!window.confirm('Confirma a remoção desta movimentacao?')) {
         return;
     }
@@ -272,7 +295,7 @@ async function vwDeleteMovimentacao() {
         if (data.linhasAfetadas !== 1) {
             throw new Error('Nenhuma movimentacao foi removida.');
         }
-        window.location.href = '/movimentacoes';
+        window.location.href = '/movimentacoes'; //retorna para a listagem
     } catch (error) {
         alert(error.message || 'Erro ao remover movimentacao.');
     } finally {
