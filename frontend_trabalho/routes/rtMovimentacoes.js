@@ -1,4 +1,4 @@
-// Arquivo: ./routes/rtMovimentacoes.js
+//cria express e o router para criar as rotas
 var express = require('express');
 var router = express.Router();
 
@@ -23,4 +23,5 @@ router.get('/form', function(req, res) {
     });
 });
 
+//exporta para termos o acesso ao arquivo
 module.exports = router;
